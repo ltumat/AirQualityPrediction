@@ -1,0 +1,28 @@
+[project]
+name = "airqualityprediction"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "email-validator==2.2.0",
+    "faker>=37.12.0",
+    "geopy==2.4.1",
+    "hopsworks[great-expectations,python]>=4.4.2",
+    "invoke>=2.2.1",
+    "matplotlib==3.8.3",
+    "modal>=1.2.2",
+    "nbformat>=5.10.4",
+    "openmeteo-requests>=1.7.4",
+    "papermill>=2.6.0",
+    "plotly>=6.4.0",
+    "pydantic>=2.12.4",
+    "pydantic-settings>=2.6.1",
+    "python-dotenv>=1.2.1",
+    "requests-cache==1.2.0",
+    "retry-requests==2.0.0",
+    "scikit-learn==1.2.2",
+    "seaborn>=0.13.2",
+    "streamlit==1.28.2",
+    "xgboost==2.0.3",
+]
