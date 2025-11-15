@@ -13,7 +13,11 @@ import requests_cache
 from retry_requests import retry
 import hopsworks
 import hsfs
+import numpy as np
 from pathlib import Path
+from typing import List
+from xgboost import XGBRegressor
+from hsfs.feature_group import FeatureGroup
 
 def get_historical_weather(city, start_date,  end_date, latitude, longitude):
     # latitude, longitude = get_city_coordinates(city)
@@ -301,3 +305,85 @@ def backfill_predictions_for_monitoring(weather_fg, air_quality_df, monitor_fg, 
     df = df.drop('pm25', axis=1)
     monitor_fg.insert(df, write_options={"wait_for_job": True})
     return hindcast_df
+
+def predict_pm25_with_single_feature(
+    model: XGBRegressor,
+    weather_fg: FeatureGroup,
+    air_quality_fg: FeatureGroup,
+    country: str,
+    city: str,
+    street: str,
+    today: datetime,
+    feature_name: str,
+) -> pd.DataFrame:
+
+    aq_hist: pd.DataFrame = air_quality_fg.read()
+    aq_hist["date"] = pd.to_datetime(aq_hist["date"]).dt.tz_localize(None)
+
+    aq_loc = aq_hist[
+        (aq_hist["country"] == country) &
+        (aq_hist["city"] == city) &
+        (aq_hist["street"] == street)
+    ].sort_values("date")
+
+    if "pm25" not in aq_loc.columns:
+        raise ValueError("Historical PM25 is required in air_quality_fg")
+
+    if "lag" in feature_name:
+        k = int(feature_name.split("_")[-1])
+    elif "rolling" in feature_name:
+        k = int(feature_name.split("_")[2].replace("d", ""))
+    else:
+        raise ValueError(f"Unsupported feature: {feature_name}")
+
+    history = (
+        aq_loc["pm25"]
+        .tail(k)
+        .tolist()
+    )
+
+    weather_all = weather_fg.filter(weather_fg.date >= today).read()
+    weather_all["date"] = pd.to_datetime(weather_all["date"]).dt.tz_localize(None)
+
+    weather_future = weather_all[
+        (weather_all["city"] == city)
+    ].copy()
+
+    weather_future = weather_future.sort_values("date").reset_index(drop=True)
+
+    predictions = []
+
+    for _, row in weather_future.iterrows():
+
+        if "lag" in feature_name:
+            feature_value = history[0]
+
+        elif "rolling" in feature_name:
+            feature_value = sum(history) / len(history)
+
+        X_df = pd.DataFrame([{
+            feature_name: feature_value,
+            "temperature_2m_mean": np.float32(row["temperature_2m_mean"]),
+            "precipitation_sum": np.float32(row["precipitation_sum"]),
+            "wind_speed_10m_max": np.float32(row["wind_speed_10m_max"]),
+            "wind_direction_10m_dominant": np.float32(row["wind_direction_10m_dominant"]),
+        }])
+
+        pm25_pred = model.predict(X_df)[0]
+
+        predictions.append({
+            "date": row["date"],
+            "temperature_2m_mean": np.float32(row["temperature_2m_mean"]),
+            "precipitation_sum": np.float32(row["precipitation_sum"]),
+            "wind_speed_10m_max": np.float32(row["wind_speed_10m_max"]),
+            "wind_direction_10m_dominant": np.float32(row["wind_direction_10m_dominant"]),
+            "city": city,
+            "predicted_pm25": pm25_pred,
+        })
+
+        history.append(pm25_pred)
+        if len(history) > k:
+            history.pop(0)
+
+    return pd.DataFrame(predictions)
+
