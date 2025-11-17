@@ -171,9 +171,9 @@ def get_pm25(aqicn_url: str, country: str, city: str, street: str, day: datetime
     if data['status'] == 'ok':
         # Extract the air quality data
         aqi_data = data['data']
-        aq_today_df = pd.DataFrame()
-        aq_today_df['pm25'] = [aqi_data['iaqi'].get('pm25', {}).get('v', None)]
-        aq_today_df['pm25'] = aq_today_df['pm25'].astype('float32')
+        aq_today_df = {}
+        aq_today_df['pm25'] = aqi_data['iaqi'].get('pm25', {}).get('v', None)
+        aq_today_df['pm25'] = float(aq_today_df['pm25'])
 
         aq_today_df['country'] = country
         aq_today_df['city'] = city
@@ -387,3 +387,24 @@ def predict_pm25_with_single_feature(
 
     return pd.DataFrame(predictions)
 
+def compute_lag_features(aq_data: pd.DataFrame, country: str, city: str, street: str) -> dict:
+    
+    history = (
+        aq_data[aq_data['street'] == street]["pm25"]
+        .tail(3)
+        .tolist()
+    )
+
+    new_features = {}
+
+    for i in range(0, 3):
+        new_features[f"pm25_lag_{i+1}"] = np.float32(history[2 - i])
+
+    new_features["pm25_rolling_2d"] = np.float32(sum(history[1:]) / 2)
+    new_features["pm25_rolling_3d"] = np.float32(sum(history) / 3)
+
+    new_features["country"] = country
+    new_features["city"] = city
+    new_features["street"] = street
+
+    return new_features
