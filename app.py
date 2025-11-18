@@ -30,6 +30,9 @@ MAP_ZOOM = 11
 SENSORS_FILE = Path(__file__).resolve().parent / "backend" / "sensors" / "sensors.yml"
 CACHE_TTL_S = 12 * 60 * 60
 
+BOTTOM_IMAGE_URL = "https://raw.githubusercontent.com/ltumat/AirQualityPrediction/refs/heads/main/docs/team_image/dunking.jpeg"
+YOUTUBE_URL = "https://www.youtube.com/watch?v=lIsTm0lGzY4&list=RDlIsTm0lGzY4&start_radio=1"
+
 
 yaml_parser = YAML()
 yaml_parser.preserve_quotes = True
@@ -231,17 +234,25 @@ def draw_map(sensors: list[Sensor]) -> None:
 
 def main() -> None:
     st.set_page_config(page_title="Stockholm Air Quality Sensors", layout="wide")
-    st.title("Air Quality Across Greater Stockholm")
+    st.title("🏀 LeScalable Frames: Air Quality Across Greater Stockholm")
     st.caption(
         "Hover each marker to quickly understand the air quality classification: "
-        "green is good, yellow is moderate, and red is poor. Click a marker to "
-        "open a popup with the live measurements and an illustrative snapshot."
+        "green is good, yellow is moderate, and darker colours mean poor quality. Click a marker to "
+        "open a popup with the current measurements and an image with the prediction for the next 6 days."
     )
     
     df = get_data()
     sensors = build_sensors(df)
 
     draw_map(sensors)
+
+    # st.image(BOTTOM_IMAGE_URL, caption="Definitely us.")
+    st.markdown(
+        f"""
+        [![bottom image]({BOTTOM_IMAGE_URL})]({YOUTUBE_URL})
+        *Definitely us.*
+        """
+    )
 
 
 if __name__ == "__main__":
