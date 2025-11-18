@@ -1,6 +1,6 @@
 # AirQualityPrediction
 
-Project corresponding to the course Scalable Machine Learning and Deep Learning (ID2223) at KTH. Team: LeScalable Frames (Jonas Lorenz and Álvaro Mazcuñán Herreros).
+Project corresponding to the course Scalable Machine Learning and Deep Learning (ID2223) at KTH. Team: LeScalable Frames (Jonas Lorenz and Álvaro Mazcuñán Herreros). Target Grade: A
 
 ## Model training and deployment.
 
