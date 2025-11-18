@@ -1,6 +1,3 @@
-import random
-import sys
-import os
 from dataclasses import dataclass
 from typing import Any
 import datetime
@@ -31,6 +28,7 @@ download_path.mkdir(parents=True, exist_ok=True)
 STOCKHOLM_CENTER = (59.3293, 18.0686)
 MAP_ZOOM = 11
 SENSORS_FILE = Path(__file__).resolve().parent / "backend" / "sensors" / "sensors.yml"
+CACHE_TTL_S = 12 * 60 * 60
 
 
 yaml_parser = YAML()
@@ -43,7 +41,7 @@ def load_sensors(file_path: Path) -> dict[str, Any]:
         return yaml_parser.load(fp)
 
 
-@st.cache_data
+@st.cache_data(ttl=CACHE_TTL_S)
 def get_data():
     sensors_doc = load_sensors(SENSORS_FILE)
     yestarday = datetime.datetime.now() - datetime.timedelta(1)
@@ -116,7 +114,6 @@ def _quality_bucket(pm25: float) -> tuple[str, str]:
 
 def build_sensors(df: pd.DataFrame) -> list[Sensor]:
     """Create synthetic sensors scattered around Stockholm."""
-    random.seed(42)
     sensors: list[Sensor] = []
     for index, row in df.iterrows():
         lat = row["latitude"]
@@ -242,8 +239,8 @@ def main() -> None:
     )
     
     df = get_data()
-
     sensors = build_sensors(df)
+
     draw_map(sensors)
 
 
