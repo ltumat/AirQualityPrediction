@@ -48,7 +48,7 @@ def get_data():
     sensors: list[dict[str, Any]] = sensors_doc.get("sensors", [])
     new_sensors: list[dict[str, Any]] = []
 
-    project = hopsworks.login(engine="python")
+    project = hopsworks.login(api_key_value=st.secrets["HOPSWORKS_API_KEY"] ,engine="python")
     fs = project.get_feature_store()
     
     time.sleep(1)
