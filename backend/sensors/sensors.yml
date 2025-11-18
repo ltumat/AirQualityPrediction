@@ -4,67 +4,90 @@ sensors:
     city: "stockholm"
     street: "stockholm-st-eriksgatan-83"
     aqicn_url: "https://api.waqi.info/feed/@10523"
-    csv_file: "backend/data/stockholm-st-eriksgatan-83.csv" 
+    csv_file: "backend/data/stockholm-st-eriksgatan-83.csv"
+    latitude: 59.3405
+    longitude: 18.037016
   - name: "hornsgatan"
     country: "sweden"
     city: "stockholm"
     street: "stockholm-hornsgatan-108-gata"
     aqicn_url: "https://api.waqi.info/feed/@10009"
     csv_file: "backend/data/stockholm-hornsgatan-108-gata.csv"
+    latitude: 59.317222
+    longitude: 18.04866
   - name: "hammarby-alle"
     country: "sweden"
     city: "stockholm"
     street: "hammarby"
     aqicn_url: "https://api.waqi.info/feed/A63637"
     csv_file: "backend/data/hammarby.csv"
+    latitude: 59.302
+    longitude: 18.082
   - name: "ljusslingan"
     country: "sweden"
     city: "stockholm"
     street: "ljusslingan"
     aqicn_url: "https://api.waqi.info/feed/A65272"
     csv_file: "backend/data/ljusslingan.csv"
+    latitude: 59.306
+    longitude: 18.09
   - name: "nybohovsbacken"
     country: "sweden"
     city: "stockholm"
     street: "sweden-hägersten-älvsjö-stadsdelsområde-nybohovsbacken-48a"
     aqicn_url: "https://api.waqi.info/feed/A474841"
     csv_file: "backend/data/nybohovsbacken.csv"
+    latitude: 59.309416
+    longitude: 18.017607
   - name: "sollentunavagen"
     country: "sweden"
     city: "stockholm"
     street: "sollentuna-sollentunavagen-192"
     aqicn_url: "https://api.waqi.info/feed/@13984"
     csv_file: "backend/data/sollentuna-sollentunavagen-192.csv"
+    latitude: 59.43364
+    longitude: 17.949741
   - name: "liljeholmen"
     country: "sweden"
     city: "stockholm"
     street: "liljeholmen"
     aqicn_url: "https://api.waqi.info/feed/A229291"
     csv_file: "backend/data/liljeholmen.csv"
+    latitude: 59.311347
+    longitude: 18.023723
   - name: "sundbyberg-tulegatan-9"
     country: "sweden"
     city: "stockholm"
     street: "sundbyberg-tulegatan-9"
     aqicn_url: "https://api.waqi.info/feed/@13988"
     csv_file: "backend/data/sundbyberg-tulegatan-9.csv"
+    latitude: 59.36426
+    longitude: 17.976278
   - name: "jultomtestegen"
     country: "sweden"
     city: "stockholm"
     street: "jultomtestegen"
     aqicn_url: "https://api.waqi.info/feed/A78529"
     csv_file: "backend/data/jultomtestegen.csv"
+    latitude: 59.284
+    longitude: 18.022
   - name: "nacka"
     country: "sweden"
     city: "stockholm"
     street: "nacka"
     aqicn_url: "https://api.waqi.info/feed/A196735"
     csv_file: "backend/data/nacka.csv"
+    latitude: 59.315563
+    longitude: 18.173956
   - name: "hägersten"
     country: "sweden"
     city: "stockholm"
     street: "hägersten"
     aqicn_url: "https://api.waqi.info/feed/A252352"
     csv_file: "backend/data/hägersten.csv"
+    latitude: 59.274
+    longitude: 17.974
+
   # - name: "lundströmsgata"
   #   country: "sweden"
   #   city: "stockholm"
