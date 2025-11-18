@@ -9,12 +9,12 @@ app = modal.App("daily-feature")
 image = (
     modal.Image.debian_slim(python_version="3.12.11")
     .pip_install_from_requirements(requirements_txt="requirements.txt")
-    .add_local_file("../notebooks/daily_feature.ipynb")
+    .add_local_dir("backend/deployment", remote_path="/root/general")
 )
 
 if Path(".env").exists():
     from dotenv import dotenv_values
-    env_vars = dotenv_values("../../.env")
+    env_vars = dotenv_values(".env")
 else:
     env_vars = {}
 
@@ -26,12 +26,16 @@ else:
 )
 def run_daily_feature():
 
-    with open("general/backend/sensors/sensors.yml", "r") as f:
+    with open("general/sensors.yml", "r") as f:
         config = yaml.safe_load(f)
 
-    notebook_path = "root/general/backend/notebooks/daily_feature.ipynb"
+    notebook_path = "general/daily_feature.ipynb"
 
-    pm.execute_notebook(
-        notebook_path,
-        "/dev/null"
-    )
+    output_nb = notebook_path.replace(".ipynb", "_output.ipynb")
+    print(f"Running {notebook_path} ...")
+    try:
+        pm.execute_notebook(notebook_path, output_nb)
+    except Exception as e:
+        print(f"Error executing {notebook_path}: {e}")
+        raise
+    print(f"Finished {notebook_path} -> {output_nb}")
